@@ -1,0 +1,8 @@
+{
+  "name": "portfolio-fullstack",
+  "version": "1.0.0",
+  "description": "Portfolio website with contact form backend (no dependencies)",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=18" }
+}

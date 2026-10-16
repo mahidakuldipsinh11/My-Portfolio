@@ -1,0 +1,15 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Messages</title>
+<style>body{font:15px system-ui;max-width:800px;margin:30px auto;padding:0 16px;background:#0f1115;color:#e6e6e6}
+input,button{padding:8px 12px;border-radius:6px;border:1px solid #444;background:#1b1e25;color:inherit}
+.m{background:#1b1e25;border:1px solid #333;border-radius:10px;padding:14px;margin:12px 0}.m small{color:#999}.m p{white-space:pre-wrap}</style></head>
+<body><h2>Contact Messages</h2>
+<div><input id="k" type="password" placeholder="Admin key"> <button onclick="load()">Load</button></div><div id="l"></div>
+<script>
+const k=document.getElementById('k');k.value=sessionStorage.getItem('k')||'';
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+async function load(){const r=await fetch('/api/messages',{headers:{'x-admin-key':k.value}});
+if(!r.ok){l.innerHTML='<p>Wrong key.</p>';return}sessionStorage.setItem('k',k.value);const d=await r.json();
+l.innerHTML=d.length?d.map(m=>`<div class="m"><b>${esc(m.name)}</b> &lt;<a href="mailto:${esc(m.email)}">${esc(m.email)}</a>&gt;<br><small>${new Date(m.createdAt).toLocaleString()}</small><p>${esc(m.message)}</p><button onclick="del('${m.id}')">Delete</button></div>`).join(''):'<p>No messages yet.</p>'}
+async function del(id){if(!confirm('Delete?'))return;await fetch('/api/messages/'+id,{method:'DELETE',headers:{'x-admin-key':k.value}});load()}
+if(k.value)load();
+</script></body></html>
